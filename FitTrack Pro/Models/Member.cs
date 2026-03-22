@@ -16,7 +16,7 @@ namespace FitTrack_Pro.Models
 		public string Gender { get; set; } = string.Empty;
 
 		[Required, StringLength(50)]
-		public string Barcode { get; set; } = string.Empty;
+		public string? Barcode { get; set; } = string.Empty;
 
 		public string? MedicalNotes { get; set; }
 		//public bool IsActive { get; set; } = true;
