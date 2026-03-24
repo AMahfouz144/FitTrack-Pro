@@ -1,5 +1,8 @@
 using Common;
+using FitTrack_Pro.Interfaces;
 using FitTrack_Pro.Models;
+using FitTrack_Pro.Repositories;
+using FitTrack_Pro.Services;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +30,15 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
+
+// Member-specific repo + service
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
