@@ -1,13 +1,14 @@
 ﻿using FitTrack_Pro.Models;
 using System.Linq.Expressions;
+using FitTrack_Pro.ViewModels;
 
 namespace Common
 {
 	public class GenericRepository<T>(ApplicationDbContext _context) : IGenericRepository<T> where T : class
 	{
-		public async Task<IEnumerable<T>> GetAllAsync()
+		public IQueryable<T> GetAllAsync()
 		{
-			return await _context.Set<T>().ToListAsync();
+			return  _context.Set<T>();
 		}
 
 		public async Task<T?> GetByIdAsync(int id)
@@ -66,5 +67,6 @@ namespace Common
 						.ToListAsync();
 		}
 	}
+
 }
 	

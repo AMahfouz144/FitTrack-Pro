@@ -1,0 +1,92 @@
+﻿@model FitTrack_Pro.ViewModels.PlanResponseViewModel
+
+@{
+ ViewData["Title"] = "Update Plan";
+}
+
+<div class="container-fluid px-0">
+ <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+ <div>
+ <h2 class="fw-bold mb-1">Update Subscription Plan</h2>
+ <p class="text-muted mb-0">Edit the details of the selected plan.</p>
+ </div>
+ <div>
+ <a asp-controller="Plans" asp-action="Index" class="btn btn-outline-secondary rounded-pill me-2 px-4">Back to Plans</a>
+ </div>
+ </div>
+
+ <div class="row">
+ <div class="col-lg-6">
+ <div class="card border-0 shadow-sm rounded-4">
+ <div class="card-body p-4">
+ <h5 class="fw-bold mb-3">Plan details</h5>
+
+ <!-- Form posts to Plans/Update with id in route -->
+ <form asp-action="Update" asp-route-id="@Model.Id" method="post" novalidate>
+ @Html.AntiForgeryToken()
+ <input type="hidden" name="_method" value="PUT" />
+ <input asp-for="Id" type="hidden" />
+
+ <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+ <div class="mb-3">
+ <label asp-for="Name" class="form-label fw-semibold"></label>
+ <input asp-for="Name" class="form-control form-control-lg rounded-3" placeholder="e.g. Monthly Membership" />
+ <span asp-validation-for="Name" class="text-danger small"></span>
+ </div>
+
+ <div class="row">
+ <div class="col-md-6 mb-3">
+ <label asp-for="DurationInDays" class="form-label fw-semibold"></label>
+ <input asp-for="DurationInDays" type="number" min="1" class="form-control rounded-3" />
+ <span asp-validation-for="DurationInDays" class="text-danger small"></span>
+ </div>
+
+ <div class="col-md-6 mb-3">
+ <label asp-for="Price" class="form-label fw-semibold"></label>
+ <div class="input-group">
+ <span class="input-group-text">$</span>
+ <input asp-for="Price" type="number" step="0.01" min="0" class="form-control rounded-3" />
+ </div>
+ <span asp-validation-for="Price" class="text-danger small"></span>
+ </div>
+ </div>
+
+ <div class="mb-3">
+ <label asp-for="Description" class="form-label fw-semibold"></label>
+ <textarea asp-for="Description" class="form-control rounded-3" rows="4" placeholder="Optional: describe what this plan includes"></textarea>
+ <span asp-validation-for="Description" class="text-danger small"></span>
+ </div>
+
+ <div class="d-flex justify-content-end gap-2 mt-4">
+ <a asp-controller="Plans" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+ <button type="submit" class="btn btn-primary rounded-pill px-4">Save Changes</button>
+ </div>
+ </form>
+ </div>
+ </div>
+ </div>
+
+ <div class="col-lg-6 d-none d-lg-block">
+ <div class="card border-0 rounded-4 h-100 bg-light shadow-sm p-4">
+ <div class="card-body">
+ <h6 class="fw-bold">Tips when updating a plan</h6>
+ <ul class="text-muted small">
+ <li>Keep plan names concise and descriptive.</li>
+ <li>Check duration matches billing expectations (days).</li>
+ <li>Verify the price and decimals are correct.</li>
+ <li>Use the description to highlight any changes or benefits.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>
+
+@section Scripts {
+ @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<style>
+ .rounded-4 { border-radius:1rem !important; }
+</style>
