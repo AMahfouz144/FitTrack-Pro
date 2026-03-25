@@ -3,7 +3,6 @@ using FitTrack_Pro.Interfaces;
 using FitTrack_Pro.Models;
 using FitTrack_Pro.Services;
 using FitTrack_Pro.Repositories;
-using FitTrack_Pro.Services;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +39,9 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 // Trainer-specific repo + service
 builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<ITrainerService, TrainerService>();
+
+// GymClass service (uses UoW.GymClasses + ITrainerRepository for dropdown)
+builder.Services.AddScoped<IGymClassService, GymClassService>();
 
 var app = builder.Build();
 

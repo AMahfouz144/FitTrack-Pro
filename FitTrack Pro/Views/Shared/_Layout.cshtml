@@ -1,4 +1,4 @@
-﻿@* _Layout.cshtml for FitTrack Pro
+@* _Layout.cshtml for FitTrack Pro
     Responsive layout with dynamic active link highlighting.
 *@
 <!DOCTYPE html>
@@ -52,7 +52,7 @@
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="~/Classes" class="sidebar-link @(currentController == "Classes" ? "active" : "")">
+                    <a asp-controller="GymClasses" asp-action="Index" class="sidebar-link @(currentController == "GymClasses" ? "active" : "")">
                         <i class="fa-solid fa-dumbbell"></i> Classes
                     </a>
                 </div>

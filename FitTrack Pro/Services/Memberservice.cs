@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using FitTrack_Pro.Interfaces;
 using FitTrack_Pro.Models;
 using FitTrack_Pro.ViewModels;
@@ -53,11 +53,11 @@ namespace FitTrack_Pro.Services
             if (member is null) return null;
 
             // also load full subscription history
-            var allSubs = (await uow.MemberSubscriptions
-                .GetAllAsync())
+            var allSubs = await uow.MemberSubscriptions
+                .GetAllAsync()
                 .Where(s => s.MemberId == id)
                 .OrderByDescending(s => s.StartDate)
-                .ToList();
+                .ToListAsync();
 
             var vm = new MemberDetailsViewModel
             {
@@ -173,13 +173,14 @@ namespace FitTrack_Pro.Services
         // ────────────────────────────────────────────────────────────
         //  DASHBOARD STATS
         // ────────────────────────────────────────────────────────────
+
         public async Task<MemberDashboardStatsViewModel> GetDashboardStatsAsync()
         {
-            var allMembers = (await memberRepo.GetAllAsync())
+            var allMembers = await memberRepo.GetAllAsync()
                 .Where(m => !m.IsDeleted)
-                .ToList();
+                .ToListAsync();
 
-            var allSubs = (await uow.MemberSubscriptions.GetAllAsync()).ToList();
+            var allSubs = await uow.MemberSubscriptions.GetAllAsync().ToListAsync();
 
             var activeMemberIds = allSubs
                 .Where(s => s.IsActive && s.EndDate >= DateTime.Today)
