@@ -7,14 +7,22 @@ namespace FitTrack_Pro.Controllers
     public class GymClassesController(IGymClassService gymClassService) : Controller
     {
         // ════════════════════════════════════════════════════════
-        //  GET  /GymClasses  –  paged list with optional search
+        //  GET  /GymClasses  –  Weekly Schedule or Paged List
         // ════════════════════════════════════════════════════════
         [HttpGet]
         public async Task<IActionResult> Index(
-            string? search, int page = 1, int pageSize = 10)
+            string? search, int page = 1, int pageSize = 10, string view = "schedule", DateTime? startDate = null)
         {
-            var vm = await gymClassService.GetPagedGymClassesAsync(page, pageSize, search);
-            return View(vm);
+            if (view == "list")
+            {
+                var vm = await gymClassService.GetPagedGymClassesAsync(page, pageSize, search);
+                ViewData["ViewMode"] = "list";
+                return View(vm);
+            }
+
+            var scheduleVm = await gymClassService.GetWeeklyScheduleAsync(startDate);
+            ViewData["ViewMode"] = "schedule";
+            return View("Schedule", scheduleVm);
         }
 
         // ════════════════════════════════════════════════════════

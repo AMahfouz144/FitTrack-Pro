@@ -118,10 +118,20 @@
             <h1>Gym Classes</h1>
             <p>@Model.TotalCount classes in the system</p>
         </div>
-        <a asp-action="Create" class="m-btn m-btn-primary">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M3 8h10" /></svg>
-            Add class
-        </a>
+        
+        <div style="display:flex; gap:12px; align-items:center;">
+            <div style="display:flex; background:#f9fafb; padding:4px; border-radius:10px; border:1px solid #eee;">
+                <a asp-action="Index" asp-route-view="schedule" 
+                   style="padding:6px 16px; font-size:13px; font-weight:500; border-radius:7px; text-decoration:none; color:#6b7280;">Calendar</a>
+                <a asp-action="Index" asp-route-view="list" 
+                   style="padding:6px 16px; font-size:13px; font-weight:500; border-radius:7px; text-decoration:none; background:#fff; color:#111827; box-shadow:0 2px 4px rgba(0,0,0,0.05);">List View</a>
+            </div>
+
+            <a asp-action="Create" class="m-btn m-btn-primary">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M3 8h10" /></svg>
+                Add class
+            </a>
+        </div>
     </div>
 
     <div class="m-stats">

@@ -17,5 +17,8 @@ namespace FitTrack_Pro.Interfaces
 
         Task<(bool Success, string? Error)> UpdateGymClassAsync(GymClassFormViewModel model);
         Task<(bool Success, string? Error)> DeleteGymClassAsync(int id);
+
+        // Weekly Schedule
+        Task<WeeklyScheduleViewModel> GetWeeklyScheduleAsync(DateTime? startDate = null);
     }
 }

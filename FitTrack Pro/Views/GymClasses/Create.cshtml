@@ -153,6 +153,7 @@
                                value="@Model.ScheduleTime.ToString("yyyy-MM-ddTHH:mm")"
                                class="@(ViewData.ModelState["ScheduleTime"]?.Errors.Any() == true ? "is-invalid" : "")" />
                     </div>
+                    <span class="f-hint">Working hours: 08:00 AM – 12:00 AM</span>
                     <span asp-validation-for="ScheduleTime" class="f-err"></span>
                 </div>
             </div>

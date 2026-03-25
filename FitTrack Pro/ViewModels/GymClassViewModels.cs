@@ -20,7 +20,7 @@ namespace FitTrack_Pro.ViewModels
     }
 
     // ────────────────────────────────────────────────────────────────
-    //  Single row in the gym classes table
+    //  Single row in the gym classes table/schedule
     // ────────────────────────────────────────────────────────────────
     public class GymClassRowViewModel
     {
@@ -32,6 +32,10 @@ namespace FitTrack_Pro.ViewModels
         public int MaxCapacity { get; set; }
         public int AttendeeCount { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        // Positioning for schedule view
+        public int ColIndex { get; set; } = 0;
+        public int ColCount { get; set; } = 1;
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -82,5 +86,27 @@ namespace FitTrack_Pro.ViewModels
 
         // Populated by the service for the trainer dropdown
         public IEnumerable<SelectListItem> TrainerOptions { get; set; } = [];
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    //  WEEKLY SCHEDULE
+    // ════════════════════════════════════════════════════════════════
+    public class WeeklyScheduleViewModel
+    {
+        public DateTime WeekStart { get; set; }
+        public DateTime WeekEnd { get; set; }
+        public List<DayScheduleViewModel> Days { get; set; } = [];
+        
+        // For navigation
+        public DateTime PreviousWeek => WeekStart.AddDays(-7);
+        public DateTime NextWeek => WeekStart.AddDays(7);
+    }
+
+    public class DayScheduleViewModel
+    {
+        public DateTime Date { get; set; }
+        public string DayName => Date.ToString("ddd");
+        public int DayNumber => Date.Day;
+        public List<GymClassRowViewModel> Classes { get; set; } = [];
     }
 }

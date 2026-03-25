@@ -112,6 +112,9 @@ namespace FitTrack_Pro.Services
         public async Task<(bool Success, string? Error, int NewId)> CreateGymClassAsync(
             GymClassFormViewModel model)
         {
+            if (model.ScheduleTime.Hour < 8)
+                return (false, "Classes cannot start before 08:00 AM.", 0);
+
             var gymClass = new GymClass
             {
                 Name = model.Name.Trim(),
@@ -134,6 +137,9 @@ namespace FitTrack_Pro.Services
         public async Task<(bool Success, string? Error)> UpdateGymClassAsync(
             GymClassFormViewModel model)
         {
+            if (model.ScheduleTime.Hour < 8)
+                return (false, "Classes cannot start before 08:00 AM.");
+
             var gymClass = await uow.GymClasses.GetByIdAsync(model.Id);
             if (gymClass is null || gymClass.IsDeleted)
                 return (false, "Gym class not found.");
@@ -167,8 +173,100 @@ namespace FitTrack_Pro.Services
         }
 
         // ────────────────────────────────────────────────────────────
+        //  WEEKLY SCHEDULE
+        // ────────────────────────────────────────────────────────────
+        public async Task<WeeklyScheduleViewModel> GetWeeklyScheduleAsync(DateTime? startDate = null)
+        {
+            var start = startDate ?? GetStartOfWeek(DateTime.Today);
+            var end = start.AddDays(7);
+
+            var classes = await uow.GymClasses.GetAllAsync()
+                .Where(c => !c.IsDeleted && c.ScheduleTime >= start && c.ScheduleTime < end)
+                .Include(c => c.Trainer)
+                .Include(c => c.Attendees)
+                .OrderBy(c => c.ScheduleTime)
+                .ToListAsync();
+
+            var vm = new WeeklyScheduleViewModel
+            {
+                WeekStart = start,
+                WeekEnd = end.AddDays(-1),
+                Days = []
+            };
+
+            for (int i = 0; i < 7; i++)
+            {
+                var dayDate = start.AddDays(i);
+                vm.Days.Add(new DayScheduleViewModel
+                {
+                    Date = dayDate,
+                    Classes = classes
+                        .Where(c => c.ScheduleTime.Date == dayDate.Date)
+                        .Select(MapToRow)
+                        .ToList()
+                });
+
+                // Calculate overlaps for this day
+                CalculateOverlaps(vm.Days[i].Classes);
+            }
+
+            return vm;
+        }
+
+        private void CalculateOverlaps(List<GymClassRowViewModel> dayClasses)
+        {
+            if (!dayClasses.Any()) return;
+
+            var sorted = dayClasses.OrderBy(c => c.ScheduleTime).ToList();
+            var clumps = new List<List<GymClassRowViewModel>>();
+
+            foreach (var c in sorted)
+            {
+                var clump = clumps.FirstOrDefault(cl => cl.Any(overlap =>
+                    c.ScheduleTime < overlap.ScheduleTime.AddMinutes(overlap.DurationInMinutes) &&
+                    overlap.ScheduleTime < c.ScheduleTime.AddMinutes(c.DurationInMinutes)));
+
+                if (clump == null)
+                {
+                    clump = new List<GymClassRowViewModel>();
+                    clumps.Add(clump);
+                }
+                clump.Add(c);
+            }
+
+            foreach (var clump in clumps)
+            {
+                var lanes = new List<DateTime>();
+                foreach (var c in clump.OrderBy(x => x.ScheduleTime))
+                {
+                    int laneIndex = lanes.FindIndex(end => end <= c.ScheduleTime);
+                    if (laneIndex == -1)
+                    {
+                        laneIndex = lanes.Count;
+                        lanes.Add(c.ScheduleTime.AddMinutes(c.DurationInMinutes));
+                    }
+                    else
+                    {
+                        lanes[laneIndex] = c.ScheduleTime.AddMinutes(c.DurationInMinutes);
+                    }
+                    c.ColIndex = laneIndex;
+                }
+                foreach (var c in clump)
+                {
+                    c.ColCount = lanes.Count;
+                }
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────
         //  PRIVATE HELPERS
         // ────────────────────────────────────────────────────────────
+        private static DateTime GetStartOfWeek(DateTime dt)
+        {
+            int diff = (7 + (dt.DayOfWeek - DayOfWeek.Monday)) % 7;
+            return dt.AddDays(-1 * diff).Date;
+        }
+
         private async Task<IEnumerable<SelectListItem>> BuildTrainerOptionsAsync(
             int selectedId = 0)
         {
