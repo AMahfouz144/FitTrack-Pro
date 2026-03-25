@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using FitTrack_Pro.Interfaces;
 using FitTrack_Pro.Models;
 using FitTrack_Pro.ViewModels;
@@ -58,7 +58,7 @@ namespace FitTrack_Pro.Services
                 .GetAllAsync())
                 .Where(s => s.MemberId == id)
                 .OrderByDescending(s => s.StartDate)
-                .ToList();
+                .ToListAsync();
 
             var vm = new MemberDetailsViewModel
             {
@@ -174,11 +174,12 @@ namespace FitTrack_Pro.Services
         // ────────────────────────────────────────────────────────────
         //  DASHBOARD STATS
         // ────────────────────────────────────────────────────────────
+
         public async Task<MemberDashboardStatsViewModel> GetDashboardStatsAsync()
         {
             var allMembers = (memberRepo.GetAllAsync())
                 .Where(m => !m.IsDeleted)
-                .ToList();
+                .ToListAsync();
 
             var allSubs = (uow.MemberSubscriptions.GetAllAsync()).ToList();
 
