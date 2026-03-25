@@ -1,0 +1,104 @@
+@model FitTrack_Pro.ViewModels.GymClassDetailsViewModel
+@{
+    ViewData["Title"] = "Delete Class";
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Syne:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+    .d-wrap { font-family:'DM Sans',sans-serif; }
+    .d-breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:#6b7280; margin-bottom:1.75rem; }
+    .d-breadcrumb a { color:#1a56db; text-decoration:none; }
+    .d-breadcrumb a:hover { text-decoration:underline; }
+    .d-page-header h1 { font-family:'Syne',sans-serif; font-size:22px; font-weight:600; letter-spacing:-.3px; margin:0 0 4px; }
+    .d-page-header p { font-size:13px; color:#6b7280; margin:0; }
+    .d-card { background:#fff; border:0.5px solid #e5e7eb; border-radius:12px; overflow:hidden; margin-top:1.5rem; }
+    .d-card-header { padding:13px 20px; border-bottom:0.5px solid #e5e7eb; background:#fcebeb; display:flex; align-items:center; gap:8px; }
+    .d-card-header svg { width:15px; height:15px; stroke:#A32D2D; flex-shrink:0; }
+    .d-card-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:500; margin:0; color:#A32D2D; }
+    .d-card-body { padding:20px; }
+    .d-info-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin-bottom:20px; }
+    .d-info-tile { background:#f9fafb; border:0.5px solid #e5e7eb; border-radius:8px; padding:12px 14px; }
+    .d-info-tile-label { font-size:11px; font-weight:500; color:#9ca3af; letter-spacing:.4px; text-transform:uppercase; margin:0 0 5px; }
+    .d-info-tile-val { font-family:'Syne',sans-serif; font-size:15px; font-weight:600; color:#111827; margin:0; }
+    .d-warn { background:#fcebeb; border:0.5px solid #F7C1C1; border-radius:8px; padding:12px 14px; font-size:13px; color:#791F1F; margin-bottom:20px; }
+    .d-footer { display:flex; gap:10px; justify-content:flex-end; padding-top:8px; }
+    .d-btn { padding:8px 18px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all .15s; border:0.5px solid transparent; display:inline-flex; align-items:center; gap:6px; text-decoration:none; }
+    .d-btn svg { width:14px; height:14px; flex-shrink:0; }
+    .d-btn-ghost { background:transparent; border-color:#d1d5db; color:#6b7280; }
+    .d-btn-ghost:hover { background:#f3f4f6; color:#111827; }
+    .d-btn-danger { background:#e24b4a; border-color:#e24b4a; color:#fff; }
+    .d-btn-danger:hover { filter:brightness(1.08); color:#fff; }
+</style>
+
+<div class="d-wrap">
+
+    <div class="d-breadcrumb">
+        <a asp-action="Index">Gym Classes</a>
+        <span>›</span>
+        <a asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a>
+        <span>›</span>
+        <span>Delete</span>
+    </div>
+
+    <div class="d-page-header">
+        <h1>Delete class</h1>
+        <p>Please review the details below before confirming deletion.</p>
+    </div>
+
+    <div class="d-card">
+        <div class="d-card-header">
+            <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5">
+                <path d="M3 4h10M6 4V2h4v2M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" />
+            </svg>
+            <span class="d-card-title">Confirm deletion — <em>@Model.Name</em></span>
+        </div>
+        <div class="d-card-body">
+            <div class="d-info-grid">
+                <div class="d-info-tile">
+                    <p class="d-info-tile-label">Class Name</p>
+                    <p class="d-info-tile-val">@Model.Name</p>
+                </div>
+                <div class="d-info-tile">
+                    <p class="d-info-tile-label">Trainer</p>
+                    <p class="d-info-tile-val" style="font-size:14px">@Model.TrainerName</p>
+                </div>
+                <div class="d-info-tile">
+                    <p class="d-info-tile-label">Schedule</p>
+                    <p class="d-info-tile-val" style="font-size:14px">@Model.ScheduleTime.ToString("dd MMM yyyy HH:mm")</p>
+                </div>
+                <div class="d-info-tile">
+                    <p class="d-info-tile-label">Duration</p>
+                    <p class="d-info-tile-val">@Model.DurationInMinutes min</p>
+                </div>
+                <div class="d-info-tile">
+                    <p class="d-info-tile-label">Attendees</p>
+                    <p class="d-info-tile-val">@Model.AttendeeCount / @Model.MaxCapacity</p>
+                </div>
+            </div>
+
+            <div class="d-warn">
+                ⚠️ This is a <strong>soft delete</strong> — the record will be hidden but all data is retained and can be recovered.
+            </div>
+
+            <div class="d-footer">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="d-btn d-btn-ghost">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5" /></svg>
+                    Cancel
+                </a>
+                <form asp-action="Delete" asp-controller="GymClasses" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="d-btn d-btn-danger">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 4h10M6 4V2h4v2M5 4v9a1 1 0 001 1h4a1 1 0 001-1V4" />
+                        </svg>
+                        Confirm delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
