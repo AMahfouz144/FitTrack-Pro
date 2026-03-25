@@ -53,7 +53,8 @@ namespace FitTrack_Pro.Services
             if (member is null) return null;
 
             // also load full subscription history
-            var allSubs = (await uow.MemberSubscriptions
+
+            var allSubs = (uow.MemberSubscriptions
                 .GetAllAsync())
                 .Where(s => s.MemberId == id)
                 .OrderByDescending(s => s.StartDate)
@@ -175,11 +176,11 @@ namespace FitTrack_Pro.Services
         // ────────────────────────────────────────────────────────────
         public async Task<MemberDashboardStatsViewModel> GetDashboardStatsAsync()
         {
-            var allMembers = (await memberRepo.GetAllAsync())
+            var allMembers = (memberRepo.GetAllAsync())
                 .Where(m => !m.IsDeleted)
                 .ToList();
 
-            var allSubs = (await uow.MemberSubscriptions.GetAllAsync()).ToList();
+            var allSubs = (uow.MemberSubscriptions.GetAllAsync()).ToList();
 
             var activeMemberIds = allSubs
                 .Where(s => s.IsActive && s.EndDate >= DateTime.Today)
