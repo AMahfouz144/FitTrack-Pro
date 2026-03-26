@@ -1,0 +1,239 @@
+@model FitTrack_Pro.ViewModels.WeeklyScheduleViewModel
+@{
+    ViewData["Title"] = "Gym Schedule";
+    var weekRange = $"{Model.WeekStart:MMM dd} — {Model.WeekEnd:MMM dd}, {Model.WeekStart:yyyy}";
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --calendar-bg: #fff;
+        --calendar-border: #f0f0f0;
+        --time-col-width: 80px;
+        --day-col-min: 140px;
+        --row-height: 80px; /* Each hour is 80px */
+        --accent-blue: #1a56db;
+        --accent-teal: #0d5f6e;
+        --text-main: #111827;
+        --text-muted: #6b7280;
+    }
+
+    .s-wrap { font-family:'DM Sans',sans-serif; color:var(--text-main); }
+    
+    /* Header & Tabs */
+    .s-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.5rem; flex-wrap:wrap; gap:16px; }
+    .s-title-group h4 { font-size:12px; font-weight:700; color:#ba8b4a; text-transform:uppercase; letter-spacing:1px; margin:0 0 4px; }
+    .s-title-group h1 { font-family:'Syne',sans-serif; font-size:32px; font-weight:700; margin:0; letter-spacing:-0.5px; }
+
+    .s-tabs { display:flex; gap:24px; border-bottom:1px solid #eee; margin-bottom:1.5rem; }
+    .s-tab { padding:12px 4px; font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; border-bottom:2px solid transparent; text-decoration:none; }
+    .s-tab.active { color:var(--accent-teal); border-bottom-color:var(--accent-teal); }
+    .s-tab:hover:not(.active) { color:var(--text-main); }
+
+    .s-actions { display:flex; gap:12px; align-items:center; }
+    .s-btn-group { display:flex; background:#f9fafb; padding:4px; border-radius:10px; border:1px solid #eee; }
+    .s-btn-toggle { padding:6px 16px; font-size:13px; font-weight:500; border-radius:7px; text-decoration:none; color:var(--text-muted); transition:all 0.2s; }
+    .s-btn-toggle.active { background:#fff; color:var(--text-main); box-shadow:0 2px 4px rgba(0,0,0,0.05); }
+
+    .s-nav-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:1px solid #eee; border-radius:50%; color:var(--text-muted); transition:all 0.2s; text-decoration:none; }
+    .s-nav-btn:hover { background:#f9fafb; color:var(--text-main); }
+
+    /* Calendar Grid */
+    .s-calendar-card { background:var(--calendar-bg); border:1px solid #eee; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.02); }
+    
+    .s-grid-container { display:flex; flex-direction:column; min-width: 900px; }
+    
+    /* Days header */
+    .s-days-header { display:grid; grid-template-columns: var(--time-col-width) repeat(7, 1fr); background:#fff; border-bottom:1px solid #eee; }
+    .s-day-cell { padding:16px 8px; text-align:center; border-left:1px solid #f8f8f8; display:flex; flex-direction:column; align-items:center; }
+    .s-day-name { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px; }
+    .s-day-num { font-family:'Syne',sans-serif; font-size:24px; font-weight:700; }
+    .s-day-cell.today { background:#f0f7f8; color:var(--accent-teal); }
+    .s-day-cell.today .s-day-num { transform: scale(1.1); }
+
+    /* Grid Content */
+    .s-grid-body { display:grid; grid-template-columns: var(--time-col-width) repeat(7, 1fr); position:relative; overflow-y:auto; max-height: 800px; }
+    
+    /* Time slot background grid */
+    .s-time-labels { grid-column: 1; border-right: 1px solid #eee; }
+    .s-time-label { height: var(--row-height); padding: 8px; font-size: 11px; color: var(--text-muted); font-weight: 500; text-align: center; border-bottom: 1px solid #f8f8f8; }
+    
+    .s-day-column { grid-column: span 1; position:relative; border-left: 1px solid #f8f8f8; border-bottom: 1px solid #f8f8f8; background-image: linear-gradient(var(--calendar-border) 1px, transparent 1px); background-size: 100% var(--row-height); }
+    
+    /* Class Card */
+    .s-class-card {
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        background: #ebf5f7;
+        border-left: 3px solid var(--accent-teal);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 11px;
+        box-shadow: 0 4px 12px rgba(13, 95, 110, 0.1);
+        z-index: 10;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+    .s-class-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(13, 95, 110, 0.15); z-index: 20; }
+    
+    .s-class-time-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:2px; }
+    .s-class-time { font-weight:700; color:var(--accent-teal); font-size:10px; }
+    .s-class-badge { padding:2px 6px; border-radius:4px; font-size:9px; font-weight:700; text-transform:uppercase; }
+    .s-badge-open { background:#dcfce7; color:#15803d; }
+    .s-badge-few  { background:#fef3c7; color:#92400e; }
+    .s-badge-full { background:#fee2e2; color:#991b1b; }
+    
+    .s-class-name { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:#064e3b; line-height:1.2; }
+    
+    .s-class-trainer { display:flex; align-items:center; gap:6px; margin-top:auto; }
+    .s-trainer-img { width:18px; height:18px; border-radius:50%; background:#ccc; }
+    .s-trainer-name { color:var(--text-muted); font-size:10px; font-weight:500; }
+    
+    .s-capacity-wrap { display:flex; flex-direction:column; gap:3px; margin-top:4px; }
+    .s-capacity-bar { height:3px; background:#d1e5e8; border-radius:2px; overflow:hidden; }
+    .s-capacity-fill { height:100%; background:var(--accent-teal); border-radius:2px; }
+    .s-capacity-text { font-size:9px; color:var(--text-muted); font-weight:600; text-align:right; }
+
+    /* Empty state */
+    .s-empty-col { height:100%; width:100%; display:flex; align-items:center; justify-content:center; opacity:0.3; }
+
+</style>
+
+<div class="s-wrap">
+    
+    <div class="s-header">
+        <div class="s-title-group">
+            <h4>Management Dashboard</h4>
+            <h1>Week of @weekRange</h1>
+        </div>
+        
+        <div class="s-actions">
+            <div class="s-btn-group">
+                <a asp-action="Index" asp-route-view="schedule" class="s-btn-toggle active">Calendar</a>
+                <a asp-action="Index" asp-route-view="list" class="s-btn-toggle">List View</a>
+            </div>
+            
+            <div style="display:flex; gap:8px;">
+                <a asp-action="Index" asp-route-startDate="@Model.PreviousWeek.ToString("yyyy-MM-dd")" class="s-nav-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                <a asp-action="Index" asp-route-startDate="@Model.NextWeek.ToString("yyyy-MM-dd")" class="s-nav-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
+            
+            <a asp-action="Create" class="btn btn-dark rounded-pill px-4" style="background:#0d5f6e; border:none; font-weight:600;">
+                <i class="fa-solid fa-plus me-2"></i> Add Class
+            </a>
+        </div>
+    </div>
+
+    <div class="s-tabs">
+        <a asp-action="Index" asp-route-view="schedule" class="s-tab">Weekly View</a>
+        <a asp-action="Index" asp-route-view="schedule" class="s-tab active">Daily View</a>
+        <a href="#" class="s-tab">Attendance</a>
+    </div>
+
+    <div class="s-calendar-card">
+        <div class="s-grid-container">
+            
+            <!-- Days header -->
+            <div class="s-days-header">
+                <div style="width:var(--time-col-width); display:flex; align-items:center; justify-content:center;">
+                    <i class="fa-regular fa-clock text-muted"></i>
+                </div>
+                @foreach(var day in Model.Days)
+                {
+                    <div class="s-day-cell @(day.Date.Date == DateTime.Today ? "today" : "")">
+                        <span class="s-day-name">@day.DayName</span>
+                        <span class="s-day-num">@day.DayNumber</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Grid Content -->
+            <div class="s-grid-body">
+                
+                <!-- Time labels (8 AM to 12 AM) -->
+                <div class="s-time-labels">
+                    @for(int h = 8; h <= 24; h++)
+                    {
+                        var label = h == 24 ? "12:00 AM" : (h > 12 ? h - 12 : h) + ":00 " + (h >= 12 && h < 24 ? "PM" : "AM");
+                        <div class="s-time-label">@label</div>
+                    }
+                </div>
+
+                <!-- Day Columns -->
+                @foreach(var day in Model.Days)
+                {
+                    <div class="s-day-column" data-date="@day.Date.ToShortDateString()">
+                        @foreach(var c in day.Classes)
+                        {
+                            var startTime = c.ScheduleTime;
+                            // Calculate position based on 8 AM start
+                            var top = (startTime.Hour - 8 + (startTime.Minute / 60.0)) * 80;
+                            var height = (c.DurationInMinutes / 60.0) * 80;
+
+                            // Calculate width and left based on overlaps
+                            var width = 100.0 / c.ColCount;
+                            var left = c.ColIndex * width;
+                            
+                            var fewSpots = c.MaxCapacity - c.AttendeeCount <= 3 && c.AttendeeCount < c.MaxCapacity;
+                            var isFull = c.AttendeeCount >= c.MaxCapacity;
+                            
+                            <div class="s-class-card" 
+                                 style="top: @(top)px; height: @(height)px; left: calc(@(left)% + 4px); width: calc(@(width)% - 8px);"
+                                 onclick="location.href='@Url.Action("Details", new { id = c.Id })'">
+                                
+                                <div class="s-class-time-row">
+                                    <span class="s-class-time">@startTime.ToString("HH:mm") - @startTime.AddMinutes(c.DurationInMinutes).ToString("HH:mm")</span>
+                                    
+                                    @if(isFull) { <span class="s-class-badge s-badge-full">Full</span> }
+                                    else if(fewSpots) { <span class="s-class-badge s-badge-few">Few Spots</span> }
+                                    else { <span class="s-class-badge s-badge-open">Open</span> }
+                                </div>
+                                
+                                <div class="s-class-name">@c.Name</div>
+                                
+                                <div class="s-class-trainer">
+                                    <div class="s-trainer-img">
+                                        <img src="https://ui-avatars.com/api/?name=@c.TrainerName&size=32&background=random" 
+                                             style="width:100%; border-radius:50%;" />
+                                    </div>
+                                    <span class="s-trainer-name">@c.TrainerName</span>
+                                </div>
+
+                                <div class="s-capacity-wrap">
+                                    <div class="s-capacity-bar">
+                                        <div class="s-capacity-fill" style="width: @(c.AttendeeCount * 100 / c.MaxCapacity)%"></div>
+                                    </div>
+                                    <span class="s-capacity-text">@c.AttendeeCount/@c.MaxCapacity</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        // Scroll to 8 AM by default if possible
+        $(function() {
+            var gridBody = $('.s-grid-body');
+            var scrollTo = (8 - 6) * 80; 
+            gridBody.scrollTop(scrollTo);
+        });
+    </script>
+}

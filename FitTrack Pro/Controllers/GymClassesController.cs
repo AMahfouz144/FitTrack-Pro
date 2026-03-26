@@ -5,109 +5,130 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FitTrack_Pro.Controllers
 {
-    public class TrainersController(ITrainerService trainerService) : Controller
+    public class GymClassesController(IGymClassService gymClassService) : Controller
     {
         // ════════════════════════════════════════════════════════
-        //  GET  /Trainers  –  paged list with optional search
+        //  GET  /GymClasses  –  Weekly Schedule or Paged List
         // ════════════════════════════════════════════════════════
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(
-            string? search, int page = 1, int pageSize = 10)
+            string? search, int page = 1, int pageSize = 10, string view = "schedule", DateTime? startDate = null)
         {
-            var vm = await trainerService.GetPagedTrainersAsync(page, pageSize, search);
-            return View(vm);
+            if (view == "list")
+            {
+                var vm = await gymClassService.GetPagedGymClassesAsync(page, pageSize, search);
+                ViewData["ViewMode"] = "list";
+                return View(vm);
+            }
+
+            var scheduleVm = await gymClassService.GetWeeklyScheduleAsync(startDate);
+            ViewData["ViewMode"] = "schedule";
+            return View("Schedule", scheduleVm);
         }
 
         // ════════════════════════════════════════════════════════
-        //  GET  /Trainers/Details/5
+        //  GET  /GymClasses/Details/5
         // ════════════════════════════════════════════════════════
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int id)
         {
-            var vm = await trainerService.GetTrainerDetailsAsync(id);
+            var vm = await gymClassService.GetGymClassDetailsAsync(id);
             if (vm is null) return NotFound();
             return View(vm);
         }
 
         // ════════════════════════════════════════════════════════
-        //  GET  /Trainers/Create
+        //  GET  /GymClasses/Create
         // ════════════════════════════════════════════════════════
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Create()
         {
-            var vm = await trainerService.GetCreateFormAsync();
+            var vm = await gymClassService.GetCreateFormAsync();
             return View(vm);
         }
 
         // ════════════════════════════════════════════════════════
-        //  POST /Trainers/Create
+        //  POST /GymClasses/Create
         // ════════════════════════════════════════════════════════
         [HttpPost, ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(TrainerFormViewModel model)
+        public async Task<IActionResult> Create(GymClassFormViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-
-            var (success, error, newId) = await trainerService.CreateTrainerAsync(model);
-            if (!success)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError(string.Empty, error!);
+                model.TrainerOptions = (await gymClassService.GetCreateFormAsync()).TrainerOptions;
                 return View(model);
             }
 
-            TempData["Success"] = $"Trainer \"{model.FullName}\" has been added successfully.";
+            var (success, error, newId) = await gymClassService.CreateGymClassAsync(model);
+            if (!success)
+            {
+                ModelState.AddModelError(string.Empty, error!);
+                model.TrainerOptions = (await gymClassService.GetCreateFormAsync()).TrainerOptions;
+                return View(model);
+            }
+
+            TempData["Success"] = $"Class \"{model.Name}\" has been created successfully.";
             return RedirectToAction(nameof(Details), new { id = newId });
         }
 
         // ════════════════════════════════════════════════════════
-        //  GET  /Trainers/Edit/5
+        //  GET  /GymClasses/Edit/5
         // ════════════════════════════════════════════════════════
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
-            var vm = await trainerService.GetEditFormAsync(id);
+            var vm = await gymClassService.GetEditFormAsync(id);
             if (vm is null) return NotFound();
             return View(vm);
         }
 
         // ════════════════════════════════════════════════════════
-        //  POST /Trainers/Edit
+        //  POST /GymClasses/Edit
         // ════════════════════════════════════════════════════════
         [HttpPost, ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(TrainerFormViewModel model)
+        public async Task<IActionResult> Edit(GymClassFormViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                model.TrainerOptions = (await gymClassService.GetEditFormAsync(model.Id))?.TrainerOptions
+                    ?? (await gymClassService.GetCreateFormAsync()).TrainerOptions;
+                return View(model);
+            }
 
-            var (success, error) = await trainerService.UpdateTrainerAsync(model);
+            var (success, error) = await gymClassService.UpdateGymClassAsync(model);
             if (!success)
             {
                 ModelState.AddModelError(string.Empty, error!);
+                model.TrainerOptions = (await gymClassService.GetEditFormAsync(model.Id))?.TrainerOptions
+                    ?? (await gymClassService.GetCreateFormAsync()).TrainerOptions;
                 return View(model);
             }
-            TempData["Success"] = $"Trainer \"{model.FullName}\" updated successfully.";
+
+            TempData["Success"] = $"Class \"{model.Name}\" updated successfully.";
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
         // ════════════════════════════════════════════════════════
-        //  POST /Trainers/Delete  (AJAX-friendly)
+        //  POST /GymClasses/Delete
         // ════════════════════════════════════════════════════════
         [HttpPost, ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var (success, error) = await trainerService.DeleteTrainerAsync(id);
+            var (success, error) = await gymClassService.DeleteGymClassAsync(id);
             if (!success)
             {
                 TempData["Error"] = error;
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["Success"] = "Trainer deleted successfully.";
+            TempData["Success"] = "Gym class deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

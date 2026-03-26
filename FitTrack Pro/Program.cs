@@ -3,8 +3,8 @@ using FitTrack_Pro.Interfaces;
 using FitTrack_Pro.Models;
 using FitTrack_Pro.Services;
 using FitTrack_Pro.Repositories;
-using FitTrack_Pro.Services;
 using Microsoft.AspNetCore.Identity;
+using FitTrack_Pro.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +31,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+//Plan
 builder.Services.AddScoped<IPlanService, PlanService>();
+//Account Helper 
+builder.Services.AddScoped<IAccountHelper, AccountHelper>();
 
 // Member-specific repo + service
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
@@ -40,6 +43,9 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 // Trainer-specific repo + service
 builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<ITrainerService, TrainerService>();
+
+// GymClass service (uses UoW.GymClasses + ITrainerRepository for dropdown)
+builder.Services.AddScoped<IGymClassService, GymClassService>();
 
 var app = builder.Build();
 
