@@ -1,4 +1,4 @@
-﻿using FitTrack_Pro.Models;
+using FitTrack_Pro.Models;
 using FitTrack_Pro.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +53,12 @@ namespace FitTrack_Pro.Controllers
 		{
 			await _signInManager.SignOutAsync();
 			return RedirectToAction("Index", "Home");
+		}
+
+		[HttpGet]
+		public IActionResult AccessDenied()
+		{
+			return View();
 		}
 	}
 }
