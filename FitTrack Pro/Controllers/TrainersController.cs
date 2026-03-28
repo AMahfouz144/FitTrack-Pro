@@ -2,6 +2,7 @@ using FitTrack_Pro.Interfaces;
 using FitTrack_Pro.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FitTrack_Pro.Controllers
 {
@@ -110,5 +111,20 @@ namespace FitTrack_Pro.Controllers
             TempData["Success"] = "Trainer deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
-    }
+
+		[HttpGet]
+		[Authorize(Roles = "Trainer")]
+		public async Task<IActionResult> Profile()
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if (userId == null) return Unauthorized();
+
+			var trainer = new List<string>();
+
+			if (trainer is null) return NotFound("Trainer profile not found.");
+
+			return View(trainer);
+		}
+	}
 }

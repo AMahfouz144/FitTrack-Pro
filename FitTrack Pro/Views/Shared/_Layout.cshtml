@@ -46,6 +46,7 @@
 
                     var showFullMenu = isAdmin || isTrainer;
                     var memberOnly = isMember && !showFullMenu;
+                    var trainerOnly = isTrainer && !isAdmin;
                 }
 
                 @if (memberOnly)
@@ -56,6 +57,25 @@
                             <i class="fa-solid fa-table-cells-large"></i> Dashboard
                         </a>
                     </div>
+                }
+                // Trainers see the full menu, but members only see their dashboard link
+                 else if (trainerOnly) 
+                {
+                    <div class="nav-item">
+                        <a asp-controller="Trainers" asp-action="Profile"
+                           class="sidebar-link @(currentController == "Trainers" ? "active" : "")">
+                            <i class="fa-solid fa-user-tie"></i> My Profile
+                        </a>
+                    </div>
+                    
+                    
+                    <div class="nav-item">
+                        <a asp-controller="GymClasses" asp-action="MyClasses"
+                           class="sidebar-link @(currentController == "GymClasses" ? "active" : "")">
+                            <i class="fa-solid fa-dumbbell"></i> My Classes
+                        </a>
+                    </div>
+                    
                 }
                 else
                 {

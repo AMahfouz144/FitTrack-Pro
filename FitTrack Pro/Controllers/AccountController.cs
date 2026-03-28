@@ -21,6 +21,7 @@ namespace FitTrack_Pro.Controllers
 		public IActionResult Login() => View();
 
 		[HttpPost]
+		[HttpPost]
 		public async Task<IActionResult> Login(LoginViewModel model)
 		{
 			if (ModelState.IsValid)
@@ -28,21 +29,29 @@ namespace FitTrack_Pro.Controllers
 				var user = await _userManager.FindByNameAsync(model.Username);
 				if (user != null)
 				{
-					var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+					var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
 
 					if (result.Succeeded)
 					{
-						List<Claim> claims = new List<Claim>();
-						claims.Add(new Claim("FullName", user.FullName));
+						var claims = new List<Claim> { new Claim("FullName", user.FullName) };
 						await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
-						if (await _userManager.IsInRoleAsync(user, "Admin") || await _userManager.IsInRoleAsync(user, "Receptionist"))
-							return RedirectToAction("Index", "Home");
-						else if (await _userManager.IsInRoleAsync(user, "Trainer"))
-							return RedirectToAction("Index", "Home");
-						else if (await _userManager.IsInRoleAsync(user, "Member"))
-							return RedirectToAction("Dashboard", "Members");
-						//else
-						//	return RedirectToAction("Index", "Home");
+
+						var userRoles = await _userManager.GetRolesAsync(user);
+
+						if (userRoles.Contains("Admin") || userRoles.Contains("Receptionist"))
+						{
+							return RedirectToAction("Index", "Home"); 
+						}
+						else if (userRoles.Contains("Trainer"))
+						{
+							return RedirectToAction("Profile", "Trainers"); 
+						}
+						else if (userRoles.Contains("Member"))
+						{
+							return RedirectToAction("Dashboard", "Members"); 
+						}
+
+						return RedirectToAction("Index", "Home");
 					}
 				}
 				ModelState.AddModelError("", "Invalid Username or Password");
