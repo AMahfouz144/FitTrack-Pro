@@ -11,12 +11,6 @@ namespace FitTrack_Pro.Controllers
 	public class HomeController(IDashboardService _service) : Controller
 	{
 
-		private readonly ApplicationDbContext _context;
-
-		public HomeController(ApplicationDbContext context)
-		{
-			_context = context;
-		}
 		[Authorize]
 		public async Task<IActionResult> Index()
 		{
