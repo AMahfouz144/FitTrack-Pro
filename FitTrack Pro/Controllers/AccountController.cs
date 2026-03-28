@@ -25,20 +25,22 @@ namespace FitTrack_Pro.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-                var user = await _userManager.FindByNameAsync(model.Username);
+				var user = await _userManager.FindByNameAsync(model.Username);
 				if (user != null)
 				{
 					var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
 
 					if (result.Succeeded)
 					{
-                        List<Claim> claims = new List<Claim>();
-                        claims.Add(new Claim("FullName", user.FullName));
-                        await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
-                        if (await _userManager.IsInRoleAsync(user, "Admin") || await _userManager.IsInRoleAsync(user, "Receptionist"))
+						List<Claim> claims = new List<Claim>();
+						claims.Add(new Claim("FullName", user.FullName));
+						await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
+						if (await _userManager.IsInRoleAsync(user, "Admin") || await _userManager.IsInRoleAsync(user, "Receptionist"))
 							return RedirectToAction("Index", "Home");
 						else if (await _userManager.IsInRoleAsync(user, "Trainer"))
 							return RedirectToAction("Index", "Home");
+						else if (await _userManager.IsInRoleAsync(user, "Member"))
+							return RedirectToAction("Dashboard", "Members");
 						else
 							return RedirectToAction("Index", "Home");
 					}
