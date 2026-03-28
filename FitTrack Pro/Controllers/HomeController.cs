@@ -15,7 +15,7 @@ namespace FitTrack_Pro.Controllers
 		{
 			_context = context;
 		}
-		//[Authorize]
+		[Authorize]
 		public async Task<IActionResult> Index()
 		{
 			var today = DateTime.Today;
