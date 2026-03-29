@@ -4,6 +4,7 @@ using FitTrack_Pro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitTrack_Pro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328233513_addMessageTable")]
+    partial class addMessageTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,16 +311,12 @@ namespace FitTrack_Pro.Migrations
                 });
 
             modelBuilder.Entity("FitTrack_Pro.Models.Message", b =>
-            modelBuilder.Entity("FitTrack_Pro.Models.SubscriptionPayment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -353,23 +352,6 @@ namespace FitTrack_Pro.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
-                    b.Property<int>("MemberSubscriptionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PaymentMethod")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MemberSubscriptionId");
-
-                    b.ToTable("SubscriptionPayments");
                 });
 
             modelBuilder.Entity("FitTrack_Pro.Models.SubscriptionPlan", b =>
@@ -670,15 +652,6 @@ namespace FitTrack_Pro.Migrations
                     b.Navigation("Reciver");
 
                     b.Navigation("Sender");
-            modelBuilder.Entity("FitTrack_Pro.Models.SubscriptionPayment", b =>
-                {
-                    b.HasOne("FitTrack_Pro.Models.MemberSubscription", "MemberSubscription")
-                        .WithMany("Payments")
-                        .HasForeignKey("MemberSubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MemberSubscription");
                 });
 
             modelBuilder.Entity("FitTrack_Pro.Models.Trainer", b =>
@@ -751,11 +724,6 @@ namespace FitTrack_Pro.Migrations
                     b.Navigation("Attendances");
 
                     b.Navigation("Subscriptions");
-                });
-
-            modelBuilder.Entity("FitTrack_Pro.Models.MemberSubscription", b =>
-                {
-                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("FitTrack_Pro.Models.MemberVisit", b =>
