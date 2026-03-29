@@ -14,7 +14,6 @@ namespace FitTrack_Pro.Controllers
 		public async Task<IActionResult> Index()
 		{
 			var viewModel = await _service.GetDashboardDataAsync();
-			return View(viewModel);
 		}
 	}
 }

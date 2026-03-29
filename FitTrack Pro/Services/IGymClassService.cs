@@ -20,5 +20,10 @@ namespace FitTrack_Pro.Interfaces
 
         // Weekly Schedule
         Task<WeeklyScheduleViewModel> GetWeeklyScheduleAsync(DateTime? startDate = null);
+
+        // Member Assignment
+        Task<GymClassAssignMemberViewModel?> GetAssignMemberFormAsync(int gymClassId);
+        Task<(bool Success, string? Error)> AssignMemberAsync(GymClassAssignMemberViewModel model);
+        Task<(bool Success, string? Error)> RemoveMemberFromClassAsync(int gymClassId, int memberId);
     }
 }

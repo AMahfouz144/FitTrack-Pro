@@ -4,6 +4,7 @@ using FitTrack_Pro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitTrack_Pro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328230518_SubscriptionPayments")]
+    partial class SubscriptionPayments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -307,7 +310,6 @@ namespace FitTrack_Pro.Migrations
                     b.ToTable("MemberVisits");
                 });
 
-            modelBuilder.Entity("FitTrack_Pro.Models.Message", b =>
             modelBuilder.Entity("FitTrack_Pro.Models.SubscriptionPayment", b =>
                 {
                     b.Property<int>("Id")
@@ -328,31 +330,6 @@ namespace FitTrack_Pro.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSeen")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MessageContent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReciverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("SeenAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReciverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Messages");
                     b.Property<int>("MemberSubscriptionId")
                         .HasColumnType("int");
 
@@ -653,23 +630,6 @@ namespace FitTrack_Pro.Migrations
                     b.Navigation("SubscriptionPlan");
                 });
 
-            modelBuilder.Entity("FitTrack_Pro.Models.Message", b =>
-                {
-                    b.HasOne("FitTrack_Pro.Models.ApplicationUser", "Reciver")
-                        .WithMany()
-                        .HasForeignKey("ReciverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FitTrack_Pro.Models.ApplicationUser", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Reciver");
-
-                    b.Navigation("Sender");
             modelBuilder.Entity("FitTrack_Pro.Models.SubscriptionPayment", b =>
                 {
                     b.HasOne("FitTrack_Pro.Models.MemberSubscription", "MemberSubscription")
