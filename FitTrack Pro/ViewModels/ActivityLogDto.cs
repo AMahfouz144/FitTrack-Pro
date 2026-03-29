@@ -2,6 +2,7 @@
 {
 	public class ActivityLogDto
 	{
+		public int MemberId { get; set; }
 		public string Time { get; set; } = string.Empty;
 		public string MemberInitials { get; set; } = string.Empty;
 		public string MemberName { get; set; } = string.Empty;

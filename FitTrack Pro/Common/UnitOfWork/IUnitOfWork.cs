@@ -13,6 +13,9 @@ namespace Common
 		IGenericRepository<SubscriptionPlan> SubscriptionPlans { get; }
 		IGenericRepository<MemberVisit> MemberVisits { get; }
 
+		IGenericRepository<Message> Messages { get; }
+
+		IGenericRepository<SubscriptionPayment> SubscriptionPayments { get; }
 
 		Task<int> CompleteAsync();
 	}

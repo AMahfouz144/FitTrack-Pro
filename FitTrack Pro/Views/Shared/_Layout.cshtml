@@ -30,7 +30,7 @@
 
         <aside class="sidebar" id="sidebar">
             <div class="brand-section">
-                <a asp-controller="Home" asp-action="Index" class="brand-title">
+                <a asp-controller="Home" asp-action="Index" class="brand-title text-decoration-none">
                     <i class="fa-solid fa-dumbbell text-primary"></i> FitTrack Pro
                 </a>
                 <div class="brand-subtitle">GYM MANAGEMENT</div>
@@ -53,70 +53,89 @@
                 {
                     <div class="nav-item">
                         <a asp-controller="Members" asp-action="Dashboard"
-                           class="sidebar-link @(currentController == "Members" ? "active" : "")">
+                               class="sidebar-link @(currentController == "Members" ? "active" : "")">
                             <i class="fa-solid fa-table-cells-large"></i> Dashboard
                         </a>
                     </div>
+                    <div class="nav-item">
+                        <a asp-controller="Chat" asp-action="getChatsMetaDataForUser"
+                               class="sidebar-link @(currentController == "Chat" ? "active" : "")">
+                            <i class="fa-solid fa-comments"></i> Chat With Gym Managers
+                        </a>
+                    </div>
                 }
-                // Trainers see the full menu, but members only see their dashboard link
-                 else if (trainerOnly) 
+                else if (trainerOnly)
                 {
                     <div class="nav-item">
                         <a asp-controller="Trainers" asp-action="Profile"
-                           class="sidebar-link @(currentController == "Trainers" ? "active" : "")">
+                               class="sidebar-link @(currentController == "Trainers" ? "active" : "")">
                             <i class="fa-solid fa-user-tie"></i> My Profile
                         </a>
                     </div>
-                    
-                    
                     <div class="nav-item">
                         <a asp-controller="GymClasses" asp-action="MyClasses"
-                           class="sidebar-link @(currentController == "GymClasses" ? "active" : "")">
+                               class="sidebar-link @(currentController == "GymClasses" ? "active" : "")">
                             <i class="fa-solid fa-dumbbell"></i> My Classes
                         </a>
                     </div>
-                    
+                    <div class="nav-item">
+                        <a asp-controller="Chat" asp-action="getChatsMetaDataForUser"
+                               class="sidebar-link @(currentController == "Chat" ? "active" : "")">
+                            <i class="fa-solid fa-comments"></i> Chat With Gym Managers
+                        </a>
+                    </div>
                 }
-                else
+                else // Admins & Staff
                 {
                     <div class="nav-item">
                         <a asp-controller="Home" asp-action="Index"
-                           class="sidebar-link @(currentController == "Home" ? "active" : "")">
+                               class="sidebar-link @(currentController == "Home" ? "active" : "")">
                             <i class="fa-solid fa-table-cells-large"></i> Dashboard
                         </a>
                     </div>
-
                     <div class="nav-item">
                         <a asp-controller="Members" asp-action="Index"
-                           class="sidebar-link @(currentController == "Members" ? "active" : "")">
+                               class="sidebar-link @(currentController == "Members" ? "active" : "")">
                             <i class="fa-solid fa-users"></i> Members
                         </a>
                     </div>
-
                     <div class="nav-item">
                         <a asp-controller="GymClasses" asp-action="Index"
-                           class="sidebar-link @(currentController == "GymClasses" ? "active" : "")">
+                               class="sidebar-link @(currentController == "GymClasses" ? "active" : "")">
                             <i class="fa-solid fa-dumbbell"></i> Classes
                         </a>
                     </div>
-
                     <div class="nav-item">
                         <a asp-controller="Trainers" asp-action="Index"
-                           class="sidebar-link @(currentController == "Trainers" ? "active" : "")">
+                               class="sidebar-link @(currentController == "Trainers" ? "active" : "")">
                             <i class="fa-solid fa-id-badge"></i> Trainers
                         </a>
                     </div>
-
                     <div class="nav-item">
                         <a asp-controller="Plans" asp-action="Index"
-                           class="sidebar-link @(currentController == "Plans" ? "active" : "")">
+                               class="sidebar-link @(currentController == "Plans" ? "active" : "")">
                             <i class="fa-solid fa-money-bill-wave"></i> Plans
                         </a>
                     </div>
+                    <div class="nav-item">
+                        <a asp-controller="Chat" asp-action="getChatsMetaDataForAdmin"
+                               class="sidebar-link @(currentController == "Chat" ? "active" : "")">
+                            <i class="fa-solid fa-comments"></i> Chats
+                        </a>
+                    </div>
+                    
+                    @* FUTURE FEATURE: Extra Chat Menu *@
+                    @* <div class="nav-item">
+                        <a asp-controller="Chat" asp-action="getChatsMetaDataForAdmin"
+                           class="sidebar-link @(currentController == "Chat" ? "active" : "")">
+                            <i class="fa-solid fa-money-bill-wave"></i> Chats
+                        </a>
+                    </div> 
+                    *@
                 }
             </nav>
 
-            <div class="profile-section">
+            <div class="profile-section mt-auto">
                 @{
                     var displayName = "Guest";
                     var displayTitle = "";
@@ -136,13 +155,13 @@
                      class="profile-avatar">
 
                 <div class="profile-info">
-                    <h6 class="profile-name">@displayName</h6>
-                    <p class="profile-title">@displayTitle</p>
+                    <h6 class="profile-name mb-0">@displayName</h6>
+                    <p class="profile-title mb-0">@displayTitle</p>
                 </div>
 
                 <a asp-controller="Settings" asp-action="Index"
-                   class="profile-settings @(currentController == "Settings" ? "active-icon" : "")"
-                   title="Settings">
+                       class="profile-settings @(currentController == "Settings" ? "active-icon" : "")"
+                       title="Settings">
                     <i class="fa-solid fa-gear"></i>
                 </a>
             </div>
@@ -150,92 +169,102 @@
 
         <div class="main-wrapper">
 
-            <header class="top-navbar mb-3 mt-1">
-                @* <div class="header-left">
-                    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+            <header class="top-navbar mb-4 mt-3 px-4 px-md-5 d-flex justify-content-end align-items-center">
+                
+                @* FUTURE FEATURE: Mobile Toggle & Search Bar *@
+                @* <div class="header-left d-flex align-items-center gap-3">
+                  <button class="mobile-toggle btn btn-light rounded-circle shadow-sm" id="mobileToggle" aria-label="Toggle Navigation">                   
+                      <i class="fa-solid fa-bars"></i>               
+                  </button>               
+                  <div class="search-bar-container position-relative">                   
+                      <i class="fa-solid fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>                   
+                      <input type="text" class="search-bar form-control rounded-pill ps-5 bg-light border-0 shadow-sm" placeholder="Search members, classes..." aria-label="Search">               
+                  </div>           
+              </div>            
+           *@
 
-                    <div class="search-bar-container">
-                        <i class="fa-solid fa-search"></i>
-                        <input type="text" class="search-bar" placeholder="Search members, classes..." aria-label="Search">
-                    </div>
-                </div> *@
-
-                <div class="header-actions">
-                    <div class="gym-status">
+                <div class="header-actions d-flex align-items-center gap-4 gap-lg-5">
+                    
+                    <div class="gym-status badge bg-success bg-opacity-10 text-success rounded-pill px-4 py-2 d-none d-md-flex align-items-center fw-bold shadow-sm" style="font-size: 0.85rem;">
+                        <span class="status-dot bg-success rounded-circle me-2" style="width:8px; height:8px;"></span>
                         Gym Status: Live
-                        <span class="status-dot"></span>
                     </div>
 
-                    @* <button class="notification-btn" aria-label="Notifications">
-                        <i class="fa-regular fa-bell pt-1"></i>
-                        <span class="notification-badge"></span>
-                    </button> *@
+                    @* FUTURE FEATURE: Notification Bell *@
+                    @* <button class="notification-btn btn btn-light rounded-circle position-relative shadow-sm" aria-label="Notifications">
+                      <i class="fa-regular fa-bell"></i>                   
+                      <span class="notification-badge position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>               
+                  </button>                
+               *@
 
-                    <div class="ms-3 d-flex align-items-center">
-                        @if (User?.Identity?.IsAuthenticated ?? false)
+                    <div class="d-flex align-items-center border-start border-2 ps-4 ps-lg-5 gap-3 gap-md-4">
+                        @if (isAuthenticated)
                         {
                             var fullNameClaim = User.FindFirst("FullName")?.Value ?? User.Identity.Name;
 
-                            <div class="d-flex align-items-center text-end me-3">
-                                <div class="me-2">
-                                    <div class="small text-muted">Signed in as</div>
-                                    <div class="fw-semibold">@fullNameClaim</div>
+                            <div class="d-flex align-items-center text-end">
+                                <div class="me-3 d-none d-sm-block">
+                                    <div class="small text-muted fw-medium" style="font-size: 0.75rem; letter-spacing: 0.5px;">Signed in as</div>
+                                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">@fullNameClaim</div>
                                 </div>
-
                                 <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(fullNameClaim ?? "User"))&background=0D6EFD&color=fff&rounded=true&bold=true"
                                      alt="@fullNameClaim"
-                                     class="rounded-circle"
-                                     style="width:38px;height:38px;" />
+                                     class="rounded-circle shadow-sm border border-2 border-white"
+                                     style="width:45px; height:45px;" />
                             </div>
 
                             <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-outline-danger rounded-pill">Logout</button>
+                                <button type="submit" class="btn btn-light text-danger rounded-pill fw-bold px-4 shadow-sm" title="Logout">
+                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> <span class="d-none d-md-inline">Logout</span>
+                                </button>
                             </form>
                         }
                         else
                         {
-                            <a asp-controller="Account" asp-action="Login"
-                               class="btn btn-outline-primary rounded-pill">
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm">
                                 Login
                             </a>
                         }
                     </div>
+
                 </div>
             </header>
-
-            <main role="main" class="content-wrapper">
+            <main role="main" class="content-wrapper p-4">
                 @RenderBody()
             </main>
 
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const toggleBtn = document.getElementById('mobileToggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
+        const toggleBtn = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
 
-            function toggleSidebar() {
-                sidebar.classList.toggle('show');
+        function toggleSidebar() {
+        if(!sidebar) return;
+                
+        sidebar.classList.toggle('show');
 
-                if (sidebar.classList.contains('show')) {
-                    overlay.style.display = 'block';
-                    setTimeout(() => overlay.classList.add('show'), 10);
-                } else {
-                    overlay.classList.remove('show');
-                    setTimeout(() => overlay.style.display = 'none', 300);
-                }
-            }
+        if (sidebar.classList.contains('show')) {
+        if(overlay) {
+        overlay.style.display = 'block';
+        setTimeout(() => overlay.classList.add('show'), 10);
+        }
+        } else {
+        if(overlay) {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 300);
+        }
+        }
+        }
 
-            if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
-            if (overlay) overlay.addEventListener('click', toggleSidebar);
+        if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+        if (overlay) overlay.addEventListener('click', toggleSidebar);
         });
     </script>
 
