@@ -10,36 +10,29 @@ namespace FitTrack_Pro.Services
 			var today = DateTime.Today;
 			var startOfMonth = new DateTime(today.Year, today.Month, 1);
 
-			// جلب الداتا الأساسية (بنفترض إن GetAllAsync بترجع الداتا المتاحة)
-			// ملاحظة: تأكد من اسم ClassAttendaces في الـ UoW عندك، أنا كتبتها زي ما بعتهالي
 			var allSubs =  uow.MemberSubscriptions.GetAllAsync();
 			var allClasses =  uow.GymClasses.GetAllAsync();
 			var allMembers = uow.Members.GetAllAsync();
 			var allAttendances = uow.ClassAttendaces.GetAllAsync();
 
-			// 1. عدد المشتركين النشطين
 			var activeMembersCount = allSubs
 				.Where(ms => ms.IsActive && ms.EndDate >= today && !ms.IsDeleted)
 				.Select(ms => ms.MemberId)
 				.Distinct()
 				.Count();
 
-			// 2. إيرادات اليوم
 			var todaysRevenue = allSubs
 				.Where(ms => ms.CreatedAt.Date == today && !ms.IsDeleted)
 				.Sum(ms => ms.PaidAmount);
 
-			// 3. الاشتراكات اللي هتنتهي خلال 7 أيام
 			var expiringSubs = allSubs
 				.Where(ms => ms.IsActive && ms.EndDate >= today && ms.EndDate <= today.AddDays(7) && !ms.IsDeleted)
 				.Count();
 
-			// 4. كلاسات اليوم
 			var classesToday = allClasses
 				.Where(c => c.ScheduleTime.Date == today && !c.IsDeleted)
 				.Count();
 
-			// 5. المشتركين الجدد هذا الشهر
 			var memberGrowth = allMembers
 				.Where(m => m.CreatedAt >= startOfMonth && !m.IsDeleted)
 				.Count();
@@ -49,7 +42,7 @@ namespace FitTrack_Pro.Services
 				.Where(ca => !ca.IsDeleted)
 				.OrderByDescending(ca => ca.AttendanceDate)
 				.Take(5)
-				.AsEnumerable() // <--- السطر ده هو مفتاح الحل (بيفصل بين الـ Database والـ Memory)
+				.AsEnumerable() 
 				.Select(ca =>
 				{
 					var member = allMembers.FirstOrDefault(m => m.Id == ca.MemberId);
@@ -59,6 +52,7 @@ namespace FitTrack_Pro.Services
 					{
 						Time = ca.AttendanceDate.ToString("hh:mm tt"),
 						MemberName = fullName,
+						MemberId= ca.MemberId,
 						MemberInitials = GetInitials(fullName),
 						Status = "Checked-in",
 						StatusColor = "success"
@@ -66,7 +60,6 @@ namespace FitTrack_Pro.Services
 				})
 				.ToList();
 
-			// 7. حساب نسبة الامتلاء للكلاسات اليوم
 			var todaysClassesList = allClasses
 				.Where(c => c.ScheduleTime.Date == today && !c.IsDeleted)
 				.ToList();
@@ -76,7 +69,6 @@ namespace FitTrack_Pro.Services
 			{
 				var totalCapacity = todaysClassesList.Sum(c => c.MaxCapacity);
 
-				// بنحسب عدد الحضور الفعلي لكلاسات اليوم من جدول الحضور لضمان الدقة
 				var todaysClassesIds = todaysClassesList.Select(c => c.Id).ToList();
 				var totalAttendees = allAttendances.Count(a => todaysClassesIds.Contains(a.GymClassId));
 
@@ -85,6 +77,7 @@ namespace FitTrack_Pro.Services
 
 			return new DashboardViewModel
 			{
+			   
 				TotalActiveMembers = activeMembersCount,
 				TodaysRevenue = todaysRevenue,
 				ExpiringSubscriptions = expiringSubs,
