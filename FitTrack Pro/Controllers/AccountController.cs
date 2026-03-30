@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace FitTrack_Pro.Controllers
+namespace FitTrack_Pro.Controllers	
 {
 	public class AccountController : Controller
 	{

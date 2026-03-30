@@ -159,7 +159,7 @@
                                 <label asp-for="PhoneNumber" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Phone Number</label>
                                 <div class="position-relative">
                                     <i class="fas fa-phone-alt input-icon"></i>
-                                    <input asp-for="PhoneNumber" id="inp-phone" class="form-control modern-input" placeholder="01X XXX XXXX" oninput="document.getElementById('js-phone').textContent=this.value||'No phone number'" />
+                                    <input asp-for="PhoneNumber" id="inp-phone" class="form-control modern-input @(ViewData.ModelState["PhoneNumber"]?.Errors.Any() == true ? "is-invalid" : "")" placeholder="01X XXX XXXX" oninput="document.getElementById('js-phone').textContent=this.value||'No phone number'" />
                                 </div>
                                 <span asp-validation-for="PhoneNumber" class="text-danger small mt-1 d-block"></span>
                             </div>
@@ -167,7 +167,7 @@
                                 <label asp-for="Specialty" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Specialty</label>
                                 <div class="position-relative">
                                     <i class="fas fa-medal input-icon"></i>
-                                    <input asp-for="Specialty" id="inp-specialty" class="form-control modern-input" placeholder="e.g. Weightlifting, Yoga" oninput="document.getElementById('js-specialty').textContent=this.value||'—'" />
+                                    <input asp-for="Specialty" id="inp-specialty" class="form-control modern-input @(ViewData.ModelState["Specialty"]?.Errors.Any() == true ? "is-invalid" : "")" placeholder="e.g. Weightlifting, Yoga" oninput="document.getElementById('js-specialty').textContent=this.value||'—'" />
                                 </div>
                                 <span asp-validation-for="Specialty" class="text-danger small mt-1 d-block"></span>
                             </div>
@@ -178,7 +178,7 @@
                                 <label asp-for="SalaryOrPercentage" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Salary / Percentage</label>
                                 <div class="position-relative">
                                     <i class="fas fa-money-bill-wave input-icon"></i>
-                                    <input asp-for="SalaryOrPercentage" type="number" step="0.01" min="0" id="inp-salary" class="form-control modern-input" placeholder="e.g. 5000" oninput="document.getElementById('js-salary').textContent=this.value||'—'" />
+                                    <input asp-for="SalaryOrPercentage" type="number" step="0.01" min="0" id="inp-salary" class="form-control modern-input @(ViewData.ModelState["SalaryOrPercentage"]?.Errors.Any() == true ? "is-invalid" : "")" placeholder="e.g. 5000" oninput="document.getElementById('js-salary').textContent=this.value||'—'" />
                                 </div>
                                 <small class="text-muted d-block mt-1">Monthly salary or commission percentage.</small>
                                 <span asp-validation-for="SalaryOrPercentage" class="text-danger small mt-1 d-block"></span>
@@ -193,7 +193,7 @@
                                 <label asp-for="UserName" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Email Address</label>
                                 <div class="position-relative">
                                     <i class="fas fa-envelope input-icon"></i>
-                                    <input asp-for="UserName" type="email" class="form-control modern-input" placeholder="name@example.com" autocomplete="email" />
+                                    <input asp-for="UserName" type="email" class="form-control modern-input @(ViewData.ModelState["UserName"]?.Errors.Any() == true ? "is-invalid" : "")" placeholder="name@example.com" autocomplete="email" />
                                 </div>
                                 <span asp-validation-for="UserName" class="text-danger small mt-1 d-block"></span>
                             </div>
@@ -203,7 +203,7 @@
                                     <label asp-for="Password" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Password</label>
                                     <div class="position-relative">
                                         <i class="fas fa-lock input-icon"></i>
-                                        <input asp-for="Password" type="password" class="form-control modern-input" placeholder="Secure password" autocomplete="new-password" />
+                                        <input asp-for="Password" type="password" class="form-control modern-input @(ViewData.ModelState["Password"]?.Errors.Any() == true ? "is-invalid" : "")" placeholder="Secure password" autocomplete="new-password" />
                                     </div>
                                     <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
                                 </div>
@@ -211,7 +211,7 @@
                                     <label asp-for="ConfirmPassword" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Confirm Password</label>
                                     <div class="position-relative">
                                         <i class="fas fa-check-circle input-icon"></i>
-                                        <input asp-for="ConfirmPassword" type="password" class="form-control modern-input" placeholder="Repeat password" autocomplete="new-password" />
+                                        <input asp-for="ConfirmPassword" type="password" class="form-control modern-input @(ViewData.ModelState["ConfirmPassword"]?.Errors.Any() == true ? "is-invalid" : "")" placeholder="Repeat password" autocomplete="new-password" />
                                     </div>
                                     <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
                                 </div>

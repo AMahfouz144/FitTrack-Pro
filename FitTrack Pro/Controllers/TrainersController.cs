@@ -82,6 +82,11 @@ namespace FitTrack_Pro.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(TrainerFormViewModel model)
         {
+            // Account credentials are not part of the Edit form, so clear their validation errors
+            ModelState.Remove(nameof(model.UserName));
+            ModelState.Remove(nameof(model.Password));
+            ModelState.Remove(nameof(model.ConfirmPassword));
+
             if (!ModelState.IsValid) return View(model);
 
             var (success, error) = await trainerService.UpdateTrainerAsync(model);
