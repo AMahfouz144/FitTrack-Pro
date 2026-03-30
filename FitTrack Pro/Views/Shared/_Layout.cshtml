@@ -72,12 +72,15 @@
                             <i class="fa-solid fa-user-tie"></i> My Profile
                         </a>
                     </div>
-                    <div class="nav-item">
+                    
+                    
+
+                    @* <div class="nav-item">
                         <a asp-controller="GymClasses" asp-action="MyClasses"
                                class="sidebar-link @(currentController == "GymClasses" ? "active" : "")">
                             <i class="fa-solid fa-dumbbell"></i> My Classes
                         </a>
-                    </div>
+                    </div> *@
                     <div class="nav-item">
                         <a asp-controller="Chat" asp-action="getChatsMetaDataForUser"
                                class="sidebar-link @(currentController == "Chat" ? "active" : "")">
