@@ -3,121 +3,267 @@
     ViewData["Title"] = "Dashboard Overview";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    .dash-wrap {
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6, .dash-value {
+        font-family: 'Syne', sans-serif;
+    }
+
+    /* KPI Cards Styling */
+    .kpi-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+        }
+
+    .kpi-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .kpi-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #6b7280;
+    }
+
+    .kpi-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #111827;
+        line-height: 1.2;
+        margin-top: 4px;
+    }
+
+    /* Quick Action Cards */
+    .action-card {
+        border: 1px solid #f3f4f6;
+        transition: all 0.2s ease;
+    }
+    
+        .action-card:hover {
+            border-color: #0D6EFD;
+            background-color: #f8fbff !important;
+            transform: translateX(4px);
+        }
+
+    /* Activity Table */
+    .activity-table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #9ca3af;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 12px;
+        text-transform: uppercase;
+    }
+
+    .activity-table td {
+        padding: 16px 0;
+        border-bottom: 1px solid #f3f4f6;
+        color: #374151;
+        vertical-align: middle;
+    }
+
+    .activity-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .activity-table tbody tr:hover td {
+        background-color: #fafafa;
+    }
+
+    /* Sub-metrics inside cards */
+    .sub-metric-box {
+        background: #f9fafb;
+        border: 0.5px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+    }
+</style>
+
+<div class="dash-wrap pb-4">
+    
+    <div class="d-flex justify-content-between align-items-end mb-4 mt-2">
         <div>
-            <h2 class="fw-bold mb-1">Dashboard Overview</h2>
-            <p class="text-muted mb-0">Real-time performance tracking for today, @DateTime.Now.ToString("MMM dd").</p>
+            <h2 class="fw-bold mb-1 text-dark">Dashboard Overview</h2>
+            <p class="text-muted mb-0" style="font-size: 14px;">Real-time performance tracking for today, <strong>@DateTime.Now.ToString("MMM dd, yyyy")</strong>.</p>
         </div>
+        @* FUTURE FEATURE: Action Buttons *@
         @* <div>
-            <button class="btn btn-outline-secondary rounded-pill me-2 px-4"><i class="fas fa-download me-2"></i>Daily Report</button>
-            <button class="btn btn-primary rounded-pill px-4"><i class="fas fa-plus me-2"></i>New Session</button>
+            <button class="btn btn-outline-secondary rounded-pill me-2 px-4 shadow-sm"><i class="fas fa-download me-2"></i>Daily Report</button>
+            <button class="btn btn-primary rounded-pill px-4 shadow-sm"><i class="fas fa-plus me-2"></i>New Session</button>
         </div> *@
     </div>
 
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #0D6EFD !important;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <p class="text-muted fw-bold mb-1" style="font-size: 0.8rem; letter-spacing: 1px;">TOTAL ACTIVE MEMBERS</p>
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-2 kpi-card">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="kpi-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
                     </div>
-                    <h2 class="fw-bold mb-0">@Model.TotalActiveMembers.ToString("N0")</h2>
+                    <div>
+                        <div class="kpi-title">TOTAL ACTIVE MEMBERS</div>
+                        <div class="kpi-value">@Model.TotalActiveMembers.ToString("N0")</div>
+                    </div>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #198754 !important;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <p class="text-muted fw-bold mb-1" style="font-size: 0.8rem; letter-spacing: 1px;">TODAY'S REVENUE</p>
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-2 kpi-card">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="kpi-icon bg-success bg-opacity-10 text-success">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill fw-bold px-2 py-1"><i class="fas fa-arrow-up me-1"></i>Today</span>
                     </div>
-                    <h2 class="fw-bold mb-0">$@Model.TodaysRevenue.ToString("N0")</h2>
+                    <div>
+                        <div class="kpi-title">TODAY'S REVENUE</div>
+                        <div class="kpi-value">$@Model.TodaysRevenue.ToString("N0")</div>
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #DC3545 !important;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <p class="text-muted fw-bold mb-1" style="font-size: 0.8rem; letter-spacing: 1px;">EXPIRING SOON</p>
-                        <span class="text-danger fw-bold" style="font-size: 0.85rem;">@Model.ExpiringSubscriptions !</span>
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-2 kpi-card">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="kpi-icon bg-danger bg-opacity-10 text-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        @if (Model.ExpiringSubscriptions > 0)
+                        {
+                            <span class="badge bg-danger text-white rounded-pill fw-bold px-2 py-1 shadow-sm">Action Needed</span>
+                        }
                     </div>
-                    <h2 class="fw-bold mb-0">@Model.ExpiringSubscriptions</h2>
+                    <div>
+                        <div class="kpi-title">EXPIRING SOON (7 DAYS)</div>
+                        <div class="kpi-value @(Model.ExpiringSubscriptions > 0 ? "text-danger" : "")">@Model.ExpiringSubscriptions</div>
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100" style="border-left: 5px solid #6C757D !important;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <p class="text-muted fw-bold mb-1" style="font-size: 0.8rem; letter-spacing: 1px;">CLASSES TODAY</p>
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-2 kpi-card">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="kpi-icon bg-secondary bg-opacity-10 text-secondary">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
                     </div>
-                    <h2 class="fw-bold mb-0">@Model.ClassesToday</h2>
+                    <div>
+                        <div class="kpi-title">CLASSES TODAY</div>
+                        <div class="kpi-value">@Model.ClassesToday</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row g-4">
+        
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 mb-4 bg-light">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold mb-3">Quick Actions</h6>
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4 p-xl-5">
+                    <h6 class="fw-bold mb-4 text-dark"><i class="fas fa-bolt text-warning me-2"></i>Quick Actions</h6>
+                    
                     <a asp-controller="Members" asp-action="Create" class="text-decoration-none">
-                        <div class="card border-0 shadow-sm rounded-3 mb-3 hover-effect">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
+                        <div class="card action-card shadow-none rounded-3 mb-3 bg-white">
+                            <div class="card-body d-flex align-items-center p-3">
+                                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
                                     <i class="fas fa-user-plus fs-5"></i>
                                 </div>
                                 <div>
-                                    <h6 class="text-dark fw-bold mb-0">Register New Member</h6>
-                                    <small class="text-muted">Create profile & plan</small>
+                                    <h6 class="text-dark fw-bold mb-0" style="font-size: 14px;">Register New Member</h6>
+                                    <small class="text-muted" style="font-size: 12px;">Create profile & plan</small>
                                 </div>
+                                <i class="fas fa-chevron-right ms-auto text-muted opacity-50"></i>
                             </div>
                         </div>
                     </a>
 
+                    @* FUTURE FEATURE: Record Visit / Quick Check-in *@
                     @* <a href="#" class="text-decoration-none">
-                        <div class="card border-0 shadow-sm rounded-3 mb-3 hover-effect">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="bg-success bg-opacity-10 text-success p-3 rounded-3 me-3">
+                        <div class="card action-card shadow-none rounded-3 mb-3 bg-white">
+                            <div class="card-body d-flex align-items-center p-3">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
                                     <i class="fas fa-qrcode fs-5"></i>
                                 </div>
                                 <div>
-                                    <h6 class="text-dark fw-bold mb-0">Record Visit</h6>
-                                    <small class="text-muted">Quick check-in</small>
+                                    <h6 class="text-dark fw-bold mb-0" style="font-size: 14px;">Record Visit</h6>
+                                    <small class="text-muted" style="font-size: 12px;">Quick scanner check-in</small>
                                 </div>
+                                <i class="fas fa-chevron-right ms-auto text-muted opacity-50"></i>
                             </div>
                         </div>
                     </a> *@
+                    
+                    <hr class="text-muted opacity-25 my-4" />
+                    
+                    <div class="sub-metric-box mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <p class="kpi-title mb-0">MEMBER GROWTH</p>
+                            <i class="fas fa-chart-line text-success opacity-50"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0 text-dark">@Model.MemberGrowth <small class="text-success fs-6 fw-bold"><i class="fas fa-caret-up"></i></small></h4>
+                        <small class="text-muted" style="font-size: 11px;">New members this month</small>
+                    </div>
+
+                    <div class="sub-metric-box">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <p class="kpi-title mb-0">CLASS FILL RATE</p>
+                            <i class="fas fa-users-cog text-primary opacity-50"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0 text-dark">@Model.ClassFillRate%</h4>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.ClassFillRate%"></div>
+                        </div>
+                        <small class="text-muted mt-1 d-block" style="font-size: 11px;">Average occupancy today</small>
+                    </div>
+
                 </div>
             </div>
-
-            @* <div class="card border-0 shadow-sm rounded-4 text-center pb-3">
-                <div class="card-body p-4">
-                    <p class="text-muted fw-bold mb-4" style="font-size: 0.8rem; letter-spacing: 1px;">EST. GYM CAPACITY</p>
-                    <div class="display-4 fw-bold text-primary mb-2">@Model.GymCapacityPercentage%</div>
-                    <small class="text-muted">Based on class fill rates</small>
-                </div>
-            </div> *@
         </div>
 
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body p-4">
+                <div class="card-body p-4 p-xl-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h6 class="fw-bold mb-0">Recent Activity</h6>
-                        <a href="#" class="text-decoration-none fw-bold small text-primary">VIEW ALL LOGS</a>
+                        <h6 class="fw-bold mb-0 text-dark"><i class="fas fa-history text-secondary me-2"></i>Recent Activity</h6>
+                        <a href="#" class="text-decoration-none fw-bold text-primary" style="font-size: 12px; letter-spacing: 0.5px;">VIEW ALL LOGS</a>
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-borderless align-middle">
-                            <thead class="text-muted small fw-bold" style="letter-spacing: 1px;">
+                        <table class="table table-borderless align-middle activity-table mb-0">
+                            <thead>
                                 <tr>
-                                    <th scope="col" style="width: 15%;">TIME</th>
-                                    <th scope="col" style="width: 50%;">MEMBER NAME</th>
-                                    <th scope="col" style="width: 35%;">STATUS</th>
+                                    <th scope="col" style="width: 20%;">TIME</th>
+                                    <th scope="col" style="width: 50%;">MEMBER INFO</th>
+                                    <th scope="col" style="width: 30%; text-align: right;">STATUS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -125,19 +271,22 @@
                                 {
                                     @foreach (var activity in Model.RecentActivities)
                                     {
-                                        <tr style="border-bottom: 1px solid #f8f9fa;">
-                                            <td class="text-muted small fw-bold">@activity.Time</td>
+                                        <tr>
+                                            <td class="text-muted fw-medium" style="font-size: 13px;">@activity.Time</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center text-secondary fw-bold me-3" style="width: 35px; height: 35px; font-size: 0.8rem;">
+                                                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center text-secondary fw-bold me-3 border" style="width: 38px; height: 38px; font-size: 0.85rem;">
                                                         @activity.MemberInitials
                                                     </div>
-                                                    <span class="fw-bold text-dark">@activity.MemberName</span>
+                                                    <div>
+                                                        <span class="fw-bold text-dark d-block" style="font-size: 14px;">@activity.MemberName</span>
+                                                        <span class="text-muted" style="font-size: 12px;">ID: #@activity.MemberId</span>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <span class="badge bg-@activity.StatusColor bg-opacity-10 text-@activity.StatusColor px-3 py-2 rounded-pill border border-@activity.StatusColor border-opacity-25">
-                                                    <i class="fas fa-circle me-1" style="font-size: 0.4rem; vertical-align: middle;"></i> @activity.Status
+                                            <td style="text-align: right;">
+                                                <span class="badge bg-@activity.StatusColor bg-opacity-10 text-@activity.StatusColor px-3 py-2 rounded-pill fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">
+                                                    <i class="fas fa-circle me-1" style="font-size: 0.3rem; vertical-align: middle;"></i> @activity.Status
                                                 </span>
                                             </td>
                                         </tr>
@@ -146,48 +295,21 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted py-4">No recent activity found today.</td>
+                                        <td colspan="3" class="text-center py-5">
+                                            <div class="d-flex flex-column align-items-center justify-content-center opacity-50">
+                                                <i class="fas fa-clipboard-list fs-1 text-muted mb-3"></i>
+                                                <p class="text-muted fw-medium mb-0">No recent activity found today.</p>
+                                            </div>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="row mt-4 g-3">
-                        <div class="col-md-6">
-                            <div class="card bg-light border-0 rounded-4 h-100">
-                                <div class="card-body">
-                                    <p class="text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">MEMBER GROWTH</p>
-                                    <h4 class="fw-bold mb-0">@Model.MemberGrowth</h4>
-                                    <small class="text-muted" style="font-size: 0.7rem;">New members this month</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card bg-light border-0 rounded-4 h-100">
-                                <div class="card-body">
-                                    <p class="text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">CLASS FILL RATE</p>
-                                    <h4 class="fw-bold mb-0">@Model.ClassFillRate%</h4>
-                                    <small class="text-muted" style="font-size: 0.7rem;">Average occupancy today</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
+
     </div>
 </div>
-
-<style>
-    .hover-effect {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-        .hover-effect:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 .5rem 1rem rgba(0,0,0,.08) !important;
-            cursor: pointer;
-        }
-</style>
