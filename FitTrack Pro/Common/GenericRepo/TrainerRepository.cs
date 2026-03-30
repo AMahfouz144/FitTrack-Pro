@@ -1,14 +1,15 @@
 using Common;
 using FitTrack_Pro.Interfaces;
 using FitTrack_Pro.Models;
+using FitTrack_Pro.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitTrack_Pro.Repositories
 {
-    public class TrainerRepository(ApplicationDbContext context)
+    public class TrainerRepository(ApplicationDbContext context, IUnitOfWork _unitOfWork)
         : GenericRepository<Trainer>(context), ITrainerRepository
     {
-        private readonly ApplicationDbContext _db = context;
+		private readonly ApplicationDbContext _db = context;
 
         // ──────────────────────────────────────────────────────────────
         //  Get a single trainer with their assigned classes
@@ -47,5 +48,13 @@ namespace FitTrack_Pro.Repositories
                 .Where(t => t.UserId == userId && !t.IsDeleted)
                 .FirstOrDefaultAsync();
         }
-    }
+		public async Task<GymClass?> GetClassWithMembersAsync(int classId)
+		{
+			return await _db.GymClasses
+				.Include(c => c.Attendees)
+					.ThenInclude(a => a.Member)
+				.FirstOrDefaultAsync(c => c.Id == classId);
+		}
+
+	}
 }

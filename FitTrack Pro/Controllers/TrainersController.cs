@@ -1,4 +1,5 @@
 using FitTrack_Pro.Interfaces;
+using FitTrack_Pro.Models;
 using FitTrack_Pro.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -74,11 +75,47 @@ namespace FitTrack_Pro.Controllers
             if (vm is null) return NotFound();
             return View(vm);
         }
+		[HttpGet]
+		[Authorize(Roles = "Trainer, Admin")]
+		public async Task<IActionResult> ClassDetails(int classId)
+		{
+			
+			var gymClass = await trainerService.GetClassWithMembersAsync(classId);
 
-        // ════════════════════════════════════════════════════════
-        //  POST /Trainers/Edit
-        // ════════════════════════════════════════════════════════
-        [HttpPost, ValidateAntiForgeryToken]
+			if (gymClass is null)
+			{
+				return NotFound("Class not found.");
+			}
+
+			return View(gymClass);
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> AddMemberVisitNote(MemberVisitFormViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				TempData["Error"] = "Please fill all required fields correctly.";
+				return RedirectToAction("ClassDetails", new { classId = model.GymClassId });
+			}
+
+			var (success, error) = await trainerService.SaveMemberVisitNoteAsync(model);
+
+			if (!success)
+			{
+				TempData["Error"] = error;
+			}
+			else
+			{
+				TempData["SuccessMessage"] = "Notes and measurements saved successfully!";
+			}
+
+			return RedirectToAction("ClassDetails", new { classId = model.GymClassId });
+		}
+		// ════════════════════════════════════════════════════════
+		//  POST /Trainers/Edit
+		// ════════════════════════════════════════════════════════
+		[HttpPost, ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(TrainerFormViewModel model)
         {

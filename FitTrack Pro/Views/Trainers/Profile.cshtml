@@ -6,7 +6,6 @@
 
 <div class="container py-5">
     <div class="row g-4">
-        <!-- Sidebar: Personal Info Card -->
         <div class="col-lg-4">
             <div class="card border-0 shadow-lg position-relative overflow-hidden" style="border-radius: 20px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white;">
                 <div class="card-body p-4 text-center">
@@ -23,8 +22,6 @@
                     <hr class="border-secondary opacity-25">
                     
                     <div class="text-start mt-4">
-
-                        
                         <div class="d-flex align-items-center mb-3">
                             <div class="icon-box me-3 bg-secondary bg-opacity-10 rounded-3 p-2">
                                 <i class="bi bi-telephone text-primary"></i>
@@ -60,7 +57,6 @@
             </div>
         </div>
 
-        <!-- Main Content: Schedule/Classes -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm" style="border-radius: 20px;">
                 <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
@@ -84,7 +80,8 @@
                                         <th class="border-0 rounded-start">Class Name</th>
                                         <th class="border-0">Schedule Time</th>
                                         <th class="border-0">Duration</th>
-                                        <th class="border-0 rounded-end">Capacity</th>
+                                        <th class="border-0">Capacity</th>
+                                        <th class="border-0 rounded-end text-end">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -110,6 +107,11 @@
                                                     </div>
                                                     <span class="small text-muted">@gymClass.MaxCapacity</span>
                                                 </div>
+                                            </td>
+                                            <td class="text-end">
+                                                <a asp-action="ClassDetails" asp-controller="Trainers" asp-route-classId="@gymClass.Id" class="btn btn-sm btn-primary rounded-pill px-3">
+                                                    <i class="bi bi-people-fill me-1"></i> View Members
+                                                </a>
                                             </td>
                                         </tr>
                                     }
@@ -152,11 +154,10 @@
         transition: all 0.2s ease;
     }
     
-    .custom-table tbody tr:hover {
-        background-color: #f8fafc !important;
-        transform: scale(1.005);
-    }
+        .custom-table tbody tr:hover {
+            background-color: #f8fafc !important;
+            transform: scale(1.005);
+        }
 </style>
 
-<!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">

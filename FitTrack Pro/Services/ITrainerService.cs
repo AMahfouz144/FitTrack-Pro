@@ -1,3 +1,4 @@
+using FitTrack_Pro.Models;
 using FitTrack_Pro.ViewModels;
 
 namespace FitTrack_Pro.Interfaces
@@ -18,5 +19,7 @@ namespace FitTrack_Pro.Interfaces
         Task<(bool Success, string? Error)> UpdateTrainerAsync(TrainerFormViewModel model);
         Task<(bool Success, string? Error)> DeleteTrainerAsync(int id);
         Task<TrainerDetailsViewModel?> GetTrainerProfileByUserIdAsync(string userId);
-    }
+		Task<GymClass?> GetClassWithMembersAsync(int classId);
+		Task<(bool Success, string? Error)> SaveMemberVisitNoteAsync(MemberVisitFormViewModel model);
+	}
 }

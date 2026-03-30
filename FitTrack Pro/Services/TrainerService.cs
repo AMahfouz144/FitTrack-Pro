@@ -185,8 +185,49 @@ namespace FitTrack_Pro.Services
             ClassCount = t.Classes?.Count ?? 0,
             CreatedAt = t.CreatedAt
         };
+		public async Task<GymClass?> GetClassWithMembersAsync(int classId)
+		{
+			return await trainerRepo.GetClassWithMembersAsync(classId);
+		}
+		public async Task<(bool Success, string? Error)> SaveMemberVisitNoteAsync(MemberVisitFormViewModel model)
+		{
+			try
+			{
+				decimal calculatedBmi = 0;
+				if (model.Height > 0)
+				{
+					calculatedBmi = model.Weight / (model.Height * model.Height);
+				}
 
-        private static TrainerClassViewModel MapClass(GymClass c) => new()
+				var newVisit = new MemberVisit
+				{
+					Height = model.Height,
+					Weight = model.Weight,
+					BMI = Math.Round(calculatedBmi, 2),
+					Notes = model.Notes
+				};
+
+				await uow.MemberVisits.AddAsync(newVisit);
+				await uow.CompleteAsync();
+
+				// ربطها بجدول الحضور
+				var attendance = await uow.ClassAttendaces.GetByIdAsync(model.ClassAttendanceId);
+				if (attendance != null)
+				{
+					attendance.MemberVisitId = newVisit.Id;
+					uow.ClassAttendaces.Update(attendance);
+					await uow.CompleteAsync();
+				}
+
+				return (true, null);
+			}
+			catch (Exception ex)
+			{
+				return (false, "An error occurred while saving: " + ex.Message);
+			}
+		}
+
+		private static TrainerClassViewModel MapClass(GymClass c) => new()
         {
             Id = c.Id,
             Name = c.Name,
