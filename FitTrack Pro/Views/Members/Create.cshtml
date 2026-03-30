@@ -226,24 +226,23 @@
                         </div>
 
                         @if (!isEdit)
-                        {
-                            <div class="form-divider">Account Credentials</div>
+                            {
+                                <div class="form-divider">Account Credentials</div>
 
-                            <div class="mb-4">
-                                <label asp-for="UserName" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Email Address</label>
-                                <div class="position-relative">
-                                    <i class="fas fa-envelope input-icon"></i>
-                                    <input asp-for="UserName" type="email" class="form-control modern-input" placeholder="name@example.com" />
+                                <div class="mb-4">
+                                    <label asp-for="UserName" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Email Address</label>
+                                    <div class="position-relative">
+                                        <i class="fas fa-envelope input-icon"></i>
+                                        <input asp-for="UserName" type="email" class="form-control modern-input" placeholder="name@example.com" />
+                                    </div>
+                                    <span asp-validation-for="UserName" class="text-danger small mt-1 d-block"></span>
                                 </div>
-                                <span asp-validation-for="UserName" class="text-danger small mt-1 d-block"></span>
-                            </div>
 
-                            <div class="row g-4 mb-2">
                                 <div class="col-md-6">
                                     <label asp-for="Password" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Password</label>
                                     <div class="position-relative">
                                         <i class="fas fa-lock input-icon"></i>
-                                        <input asp-for="Password" type="password" class="form-control modern-input" placeholder="Secure password" autocomplete="new-password" />
+                                        <input asp-for="Password" type="password" class="form-control modern-input" placeholder="Secure password" autocomplete="new-password" required />
                                     </div>
                                     <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
                                 </div>
@@ -251,12 +250,11 @@
                                     <label asp-for="ConfirmPassword" class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing:0.5px;">Confirm Password</label>
                                     <div class="position-relative">
                                         <i class="fas fa-check-circle input-icon"></i>
-                                        <input asp-for="ConfirmPassword" type="password" class="form-control modern-input" placeholder="Repeat password" autocomplete="new-password" />
+                                        <input asp-for="ConfirmPassword" type="password" class="form-control modern-input" placeholder="Repeat password" autocomplete="new-password" required />
                                     </div>
                                     <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
                                 </div>
-                            </div>
-                        }
+                            }
 
                         <div class="form-divider">Medical Details</div>
                         <div class="mb-4">
