@@ -88,7 +88,7 @@ This project was developed by a team from the Information Technology Institute (
 
 | Author | Role | GitHub Profile |
 |--------|------|----------------|
-| **Abdelrehman Mahfouz** | Lead Developer | [@KHALEDMO07]([https://github.com/KHALEDMO07](https://github.com/AMahfouz144)) |
+| **Abdelrehman Mahfouz** | Lead Developer | [@AMahfouz144]([https://github.com/AMahfouz144]) |
 | **Khaled Mahmoud** | Lead Developer | [@KHALEDMO07](https://github.com/KHALEDMO07) |
 | **Ahmed Abdelaziz** | Core Developer | [@AZIZ20035](https://github.com/AZIZ20035) |
 | **Ahmed Sayed** | Core Developer | [@Ahmed-Saayed](https://github.com/Ahmed-Saayed) |
